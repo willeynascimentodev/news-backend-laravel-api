@@ -1,0 +1,24 @@
+version: '2.13'
+
+services:
+  news-laravel-api: 
+    container_name: news-laravel-api-willey
+    build: ./ 
+    command: php artisan serve --host 0.0.0.0
+    working_dir: /usr/src/backend-news-laravel-api
+    links: 
+      - mysql
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/usr/src/backend-news-laravel-api
+
+  #mysql
+  mysql:
+    container_name: news-mysql-willey
+    environment:
+      MYSQL_DATABASE: news_app
+      MYSQL_ROOT_PASSWORD: root
+    image: mysql
+    ports:
+      - "3306:3306"
