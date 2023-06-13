@@ -15,7 +15,7 @@ services:
 
   #mysql
   mysql:
-    container_name: news-mysql-willey
+    container_name: mysql
     environment:
       MYSQL_DATABASE: news_app
       MYSQL_ROOT_PASSWORD: root
