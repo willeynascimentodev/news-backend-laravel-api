@@ -20,4 +20,8 @@ Route::resource('auth', AuthController::class)->only([
     'store', 'destroy'
 ]);
 
-Route::get('/articles', [ArticleController::class, 'index']);
+
+Route::middleware('jwt.verify')->group(function() {
+    Route::get('/articles', [ArticleController::class, 'index']);
+});
+
