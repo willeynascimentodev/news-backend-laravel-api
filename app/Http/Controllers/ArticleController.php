@@ -16,15 +16,40 @@ class ArticleController extends Controller
         $nyTimes = $factory->getClass('NyAPI');
         $nyUrl = $nyTimes->prepareUrl($req);
 
+        $newsAPI = $factory->getClass('NewsAPI');
+        $newsUrl = $newsAPI->prepareUrl($req);
+        
         $responses = Http::pool(fn (Pool $pool) => [
             $pool->as('nyAPI')->get($nyUrl),
+            $pool->as('newsAPI')->get($newsUrl)
         ]);
 
-        $nyTimesData = $nyTimes->getData(json_decode($responses['nyAPI']->body()));
+        $data = array();
+        $data['data'] = [];
+        $data['total'] = 0;
+        $data['inPage'] = 0;
+
+        $nyTimesData = [];
+        if ($responses['nyAPI']->ok()) {
+            $nyTimesData = $nyTimes->getData(json_decode($responses['nyAPI']->body()));
+
+            $data['data'] = array_merge($data['data'], $nyTimesData['data']);
+            $data['total'] += $nyTimesData['total'];
+            $data['inPage'] += $nyTimesData['inPage'];
+        }
+        $newsAPIData = [];
+        if ($responses['newsAPI']->ok()) {
+            $newsAPIData = $newsAPI->getData(json_decode($responses['newsAPI']->body()));
+            
+            $data['data'] = array_merge($data['data'], $newsAPIData['data']);
+            $data['total'] += $newsAPIData['total'];
+            $data['inPage'] += $newsAPIData['inPage'];
+        }
         
         return response()->json([
-            'total' => $nyTimesData['total'],
-            'data' => $nyTimesData['data']
+            'total' => $data['total'],
+            'inPage' => $data['inPage'],
+            'data' => $data['data']
         ], 200);
 
     }
