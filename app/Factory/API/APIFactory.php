@@ -4,6 +4,7 @@ namespace App\Factory\API;
 
 use App\Factory\API\NyAPI;
 use App\Factory\API\NewsAPI;
+use App\Factory\API\TheGuardianAPI;
 
 class APIFactory{
     public function getClass($class) {
@@ -13,6 +14,9 @@ class APIFactory{
                     break;
             case 'NewsAPI':
                 return new NewsAPI();
+                    break;
+            case 'TheGuardian':
+                return new TheGuardianAPI();
                     break;
         }
     }

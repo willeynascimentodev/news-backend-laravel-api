@@ -25,7 +25,7 @@ abstract class API {
 
     abstract public function prepareUrl($req);
 
-    abstract public function getData($payload);
+    abstract public function getData($payload, $inPage);
 
     abstract public function arrayToUrl($array);
 

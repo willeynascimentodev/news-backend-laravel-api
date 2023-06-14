@@ -18,10 +18,14 @@ class ArticleController extends Controller
 
         $newsAPI = $factory->getClass('NewsAPI');
         $newsUrl = $newsAPI->prepareUrl($req);
+
+        $guardianAPI = $factory->getClass('TheGuardian');
+        $guardianUrl = $guardianAPI->prepareUrl($req);
         
         $responses = Http::pool(fn (Pool $pool) => [
             $pool->as('nyAPI')->get($nyUrl),
-            $pool->as('newsAPI')->get($newsUrl)
+            $pool->as('newsAPI')->get($newsUrl),
+            $pool->as('guardianAPI')->get($guardianUrl)
         ]);
 
         $data = array();
@@ -30,20 +34,30 @@ class ArticleController extends Controller
         $data['inPage'] = 0;
 
         $nyTimesData = [];
-        if ($responses['nyAPI']->ok()) {
-            $nyTimesData = $nyTimes->getData(json_decode($responses['nyAPI']->body()));
+        if (isset($responses['nyAPI']) && $responses['nyAPI']->ok()) {
+            $nyTimesData = $nyTimes->getData(json_decode($responses['nyAPI']->body()), $data['inPage']);
 
-            $data['data'] = array_merge($data['data'], $nyTimesData['data']);
+            $data['data'] = array_merge($data['data'], $nyTimesData['data']['data']);
             $data['total'] += $nyTimesData['total'];
             $data['inPage'] += $nyTimesData['inPage'];
         }
+
         $newsAPIData = [];
-        if ($responses['newsAPI']->ok()) {
-            $newsAPIData = $newsAPI->getData(json_decode($responses['newsAPI']->body()));
+        if (isset($responses['newsAPI']) && $responses['newsAPI']->ok()) {
+            $newsAPIData = $newsAPI->getData(json_decode($responses['newsAPI']->body()), $data['inPage']);
             
-            $data['data'] = array_merge($data['data'], $newsAPIData['data']);
+            $data['data'] = array_merge($data['data'], $newsAPIData['data']['data']);
             $data['total'] += $newsAPIData['total'];
             $data['inPage'] += $newsAPIData['inPage'];
+        }
+        
+        $guardianAPIData = [];
+        if ($responses['guardianAPI']->ok()) {
+            $guardianAPIData = $guardianAPI->getData(json_decode($responses['guardianAPI']->body()), $data['inPage']);
+            
+            $data['data'] = array_merge($data['data'], $guardianAPIData['data']['data']);
+            $data['total'] += $guardianAPIData['total'];
+            $data['inPage'] += $guardianAPIData['inPage'];
         }
         
         return response()->json([

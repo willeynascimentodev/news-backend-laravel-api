@@ -17,7 +17,7 @@ class NewsAPI extends API{
         $date = $req->date ? '&from='.$req->date : '2020-01-01';
         $keyword = $req->keyword ? '&q='.$req->keyword : '';
         $page = $req->page ? '&page='.$req->page : '';
-        $pageSize = '&pageSize=10';
+        $pageSize = '&pageSize=10&';
         
         $sources = $req->sources && count($req->sources) > 0 ?
             'sources='.$this->arrayToUrl($req->sources) : '';
@@ -40,9 +40,8 @@ class NewsAPI extends API{
         return $item;
     }
 
-    public function getData ($data) {
+    public function getData ($data, $inPage) {
         $articles = array();
-        $inPage = 0;
 
         foreach ($data->articles as $d) {
             $article = (object) array(
@@ -52,7 +51,7 @@ class NewsAPI extends API{
                 'source' => $d->source->name,
                 'link' => $d->url
             );
-            $articles['data'][] = $article;
+            $articles['data'][$inPage] = $article;
             $inPage++;
         }
 

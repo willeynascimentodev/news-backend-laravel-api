@@ -42,9 +42,8 @@ class NyAPI extends API{
         return $item;
     }
 
-    public function getData($data) {
+    public function getData($data, $inPage) {
         $articles = array();
-        $inPage = 0;
 
         foreach ($data->response->docs as $d) {
             $article = (object) array(
@@ -54,7 +53,7 @@ class NyAPI extends API{
                 'source' => $d->source,
                 'link' => $d->web_url
             );
-            $articles['data'][] = $article;
+            $articles['data'][$inPage] = $article;
             $inPage++;
         }
 
