@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ArticleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,3 +19,5 @@ use App\Http\Controllers\AuthController;
 Route::resource('auth', AuthController::class)->only([
     'store', 'destroy'
 ]);
+
+Route::get('/articles', [ArticleController::class, 'index']);
