@@ -7,7 +7,7 @@ use App\Factory\API\API;
 class NewsAPI extends API{
 
 
-    public function prepareUrl ($req) {
+    public function prepareUrl($req) {
 
         $baseUrl = "https://newsapi.org/v2/everything";
         $apiKey = "6cbe95b31cc649eeab6d111af78cc82d";
@@ -17,10 +17,10 @@ class NewsAPI extends API{
         $date = $req->date ? '&from='.$req->date : '2020-01-01';
         $keyword = $req->keyword ? '&q='.$req->keyword : '';
         $page = $req->page ? '&page='.$req->page : '';
-        $pageSize = '&pageSize=10&';
+        $pageSize = '&pageSize=10';
         
         $sources = $req->sources && count($req->sources) > 0 ?
-            'sources='.$this->arrayToUrl($req->sources) : '';
+            '&sources='.$this->arrayToUrl($req->sources) : '';
         
         $baseUrl .= $date.$keyword.$page.$pageSize.trim($sources);
 

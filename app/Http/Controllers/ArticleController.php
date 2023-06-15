@@ -21,50 +21,60 @@ class ArticleController extends Controller
 
         $guardianAPI = $factory->getClass('TheGuardian');
         $guardianUrl = $guardianAPI->prepareUrl($req);
-        
-        $responses = Http::pool(fn (Pool $pool) => [
-            $pool->as('nyAPI')->get($nyUrl),
-            $pool->as('newsAPI')->get($newsUrl),
-            $pool->as('guardianAPI')->get($guardianUrl)
-        ]);
 
-        $data = array();
-        $data['data'] = [];
-        $data['total'] = 0;
-        $data['inPage'] = 0;
-
-        $nyTimesData = [];
-        if (isset($responses['nyAPI']) && $responses['nyAPI']->ok()) {
-            $nyTimesData = $nyTimes->getData(json_decode($responses['nyAPI']->body()), $data['inPage']);
-
-            $data['data'] = array_merge($data['data'], $nyTimesData['data']['data']);
-            $data['total'] += $nyTimesData['total'];
-            $data['inPage'] += $nyTimesData['inPage'];
-        }
-
-        $newsAPIData = [];
-        if (isset($responses['newsAPI']) && $responses['newsAPI']->ok()) {
-            $newsAPIData = $newsAPI->getData(json_decode($responses['newsAPI']->body()), $data['inPage']);
+        try {
+            $responses = Http::pool(fn (Pool $pool) => [
+                $pool->as('nyAPI')->get($nyUrl),
+                $pool->as('newsAPI')->get($newsUrl),
+                $pool->as('guardianAPI')->get($guardianUrl)
+            ]);
+    
+            $data = array();
+            $data['data'] = [];
+            $data['total'] = 0;
+            $data['inPage'] = 0;
+    
+            $nyTimesData = [];
+            if (isset($responses['nyAPI']) && $responses['nyAPI']->ok()) {
+                $nyTimesData = $nyTimes->getData(json_decode($responses['nyAPI']->body()), $data['inPage']);
+                
+                
+                $data['data'] = isset($nyTimesData['data']['data']) ?
+                    array_merge($data['data'], $nyTimesData['data']['data']) : [];
+                $data['total'] += $nyTimesData['total'];
+                $data['inPage'] = $nyTimesData['inPage'];
+            }
             
-            $data['data'] = array_merge($data['data'], $newsAPIData['data']['data']);
-            $data['total'] += $newsAPIData['total'];
-            $data['inPage'] += $newsAPIData['inPage'];
-        }
-        
-        $guardianAPIData = [];
-        if ($responses['guardianAPI']->ok()) {
-            $guardianAPIData = $guardianAPI->getData(json_decode($responses['guardianAPI']->body()), $data['inPage']);
+            $newsAPIData = [];
+            if (isset($responses['newsAPI']) && $responses['newsAPI']->ok()) {
+                $newsAPIData = $newsAPI->getData(json_decode($responses['newsAPI']->body()), $data['inPage']);
+                
+                $data['data'] = isset($newsAPIData['data']['data']) ?
+                    array_merge($data['data'], $newsAPIData['data']['data']) : [];
+                $data['total'] += $newsAPIData['total'];
+                $data['inPage'] = $newsAPIData['inPage'];
+            }
             
-            $data['data'] = array_merge($data['data'], $guardianAPIData['data']['data']);
-            $data['total'] += $guardianAPIData['total'];
-            $data['inPage'] += $guardianAPIData['inPage'];
+            $guardianAPIData = [];
+            if ($responses['guardianAPI']->ok()) {
+                $guardianAPIData = $guardianAPI->getData(json_decode($responses['guardianAPI']->body()), $data['inPage']);
+                
+                $data['data'] = isset($guardianAPIData['data']['data']) ?
+                    array_merge($data['data'], $guardianAPIData['data']['data']) : [];
+                $data['total'] += $guardianAPIData['total'];
+                $data['inPage'] = $guardianAPIData['inPage'];
+            }
+            
+            return response()->json([
+                'total' => $data['total'],
+                'inPage' => $data['inPage'],
+                'data' => $data['data']
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
         }
-        
-        return response()->json([
-            'total' => $data['total'],
-            'inPage' => $data['inPage'],
-            'data' => $data['data']
-        ], 200);
 
     }
 }

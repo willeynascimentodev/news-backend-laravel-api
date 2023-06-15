@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\FilterController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -23,5 +25,8 @@ Route::resource('auth', AuthController::class)->only([
 
 Route::middleware('jwt.verify')->group(function() {
     Route::get('/articles', [ArticleController::class, 'index']);
+    Route::get('/filters', [FilterController::class, 'getFilters']);
+    Route::post('/filters', [FilterController::class, 'store']);
+    Route::delete('/filters/{id}', [FilterController::class, 'destroy']);
 });
 

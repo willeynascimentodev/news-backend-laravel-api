@@ -10,6 +10,10 @@ class AuthController extends Controller
     public function store(Request $req) {
         $credentials = request(['email', 'password']);
 
+        if (!$req->email || !$req->password) {
+            return response()->json(['error' => 'Invalid Parameters'], 400);
+        }
+
         if (! $token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Invalid Credentials'], 401);
         }

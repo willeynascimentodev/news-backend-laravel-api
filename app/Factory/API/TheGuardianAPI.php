@@ -7,7 +7,7 @@ use App\Factory\API\API;
 class TheGuardianAPI extends API{
 
 
-    public function prepareUrl ($req) {
+    public function prepareUrl($req) {
 
         $baseUrl = "https://content.guardianapis.com/search";
         $apiKey = "test";
