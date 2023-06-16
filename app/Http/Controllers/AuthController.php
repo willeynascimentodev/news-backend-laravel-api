@@ -14,7 +14,7 @@ class AuthController extends Controller
             return response()->json(['error' => 'Invalid Parameters'], 400);
         }
 
-        if (! $token = auth()->attempt($credentials)) {
+        if (! $token = auth()->setTTL(86400)->attempt($credentials)) {
             return response()->json(['error' => 'Invalid Credentials'], 401);
         }
 

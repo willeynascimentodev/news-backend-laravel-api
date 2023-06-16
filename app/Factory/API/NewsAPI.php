@@ -18,9 +18,8 @@ class NewsAPI extends API{
         $keyword = $req->keyword ? '&q='.$req->keyword : '';
         $page = $req->page ? '&page='.$req->page : '';
         $pageSize = '&pageSize=10';
-        
         $sources = $req->sources && count($req->sources) > 0 ?
-            '&sources='.$this->arrayToUrl($req->sources) : '';
+        '&sources='.$this->arrayToUrl($req->sources) : '';
         
         $baseUrl .= $date.$keyword.$page.$pageSize.trim($sources);
 
@@ -46,6 +45,7 @@ class NewsAPI extends API{
 
         foreach ($data->articles as $d) {
             $article = (object) array(
+                'idInPage' => $inPage,
                 'title' => $d->title,
                 'category' => 'N/I',
                 'date' => substr($d->publishedAt, 0, 10),

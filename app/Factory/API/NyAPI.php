@@ -48,6 +48,7 @@ class NyAPI extends API{
 
         foreach ($data->response->docs as $d) {
             $article = (object) array(
+                'idInPage' => $inPage,
                 'title' => $d->abstract,
                 'category' => $d->section_name,
                 'date' => substr($d->pub_date, 0, 10),

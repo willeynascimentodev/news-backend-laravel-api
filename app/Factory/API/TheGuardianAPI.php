@@ -46,6 +46,7 @@ class TheGuardianAPI extends API{
         
         foreach ($data->response->results as $d) {
             $article = (object) array(
+                'idInPage' => $inPage,
                 'title' => $d->webTitle,
                 'category' => $d->sectionName,
                 'date' => substr($d->webPublicationDate, 0, 10),
