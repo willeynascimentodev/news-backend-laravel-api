@@ -9,6 +9,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Filter;
+use Auth;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -57,5 +59,27 @@ class User extends Authenticatable implements JWTSubject
     public function filters(): HasMany
     {
         return $this->hasMany(Filter::class);
+    }
+
+    public function getFilters() {
+        
+        $data = [
+            'data' => [
+                'categories' => Filter::where('type', 'category')
+                ->where('user_id', Auth::user()->id)
+                ->get()
+                ->toArray(),
+                'sources' => Filter::where('type', 'source')
+                ->where('user_id', Auth::user()->id)
+                ->get()
+                ->toArray(),
+                'authors' => Filter::where('type', 'author')
+                ->where('user_id', Auth::user()->id)
+                ->get()
+                ->toArray()
+            ]
+        ];
+
+        return $data;
     }
 }

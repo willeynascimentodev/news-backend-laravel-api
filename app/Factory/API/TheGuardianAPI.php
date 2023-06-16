@@ -31,6 +31,7 @@ class TheGuardianAPI extends API{
         $item = '';
 
         foreach ($array as $a) {
+            $a = is_array($a) ? $a['name'] : $a;
             $a = str_replace(' ', '-', $a);
             $a = strtolower($a);
 

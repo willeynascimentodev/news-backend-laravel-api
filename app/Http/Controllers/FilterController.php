@@ -7,23 +7,13 @@ use App\Models\User;
 use App\Models\Filter;
 use Auth;
 
+
 class FilterController extends Controller
 {
     public function getFilters() {
 
-        return response()->json([
-            'data' => [
-                'categories' => Filter::where('type', 'category')
-                ->where('user_id', Auth::user()->id)
-                ->get(),
-                'sources' => Filter::where('type', 'source')
-                ->where('user_id', Auth::user()->id)
-                ->get(),
-                'authors' => Filter::where('type', 'author')
-                ->where('user_id', Auth::user()->id)
-                ->get()
-            ]
-        ], 200);
+        $data = User::getFilters();
+        return response()->json($data, 200);
         
     }
 

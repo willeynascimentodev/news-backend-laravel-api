@@ -36,6 +36,7 @@ class NyAPI extends API{
         $item = '';
 
         foreach ($array as $a) {
+            $a = is_array($a) ? $a['name'] : $a;
             $item .= '"'.$a.'",';
         }
         $item = substr($item, 0, -1);

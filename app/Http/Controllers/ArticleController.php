@@ -8,6 +8,8 @@ use App\Factory\API\APIFactory;
 use Illuminate\Http\Client\Pool;
 use Illuminate\Support\Facades\Http;
 
+use App\Models\User;
+
 class ArticleController extends Controller
 {
     public function index(Request $req) {
@@ -76,5 +78,17 @@ class ArticleController extends Controller
             ], 500);
         }
 
+    }
+
+    public function feed(Request $req) {
+        $filters = User::getFilters();
+        
+        $request['categories'] = $filters['data']['categories'];
+        $request['sources'] = $filters['data']['sources'];
+        $request['authors'] = $filters['data']['authors'];
+        
+        $req->merge($request);
+        
+        return $this->index($req);
     }
 }
