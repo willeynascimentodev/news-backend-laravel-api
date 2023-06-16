@@ -18,6 +18,9 @@ class FilterController extends Controller
                 ->get(),
                 'sources' => Filter::where('type', 'source')
                 ->where('user_id', Auth::user()->id)
+                ->get(),
+                'authors' => Filter::where('type', 'author')
+                ->where('user_id', Auth::user()->id)
                 ->get()
             ]
         ], 200);
@@ -30,16 +33,19 @@ class FilterController extends Controller
             return response()->json(['error' => 'Invalid Parameters'], 400);
         }
 
-        $countFilters = Filter::where('type', $req->type)->count();
+        $countFilters = Filter::where('type', $req->type)
+        ->where('user_id', Auth::user()->id)
+        ->count();
 
-        if ($countFilters > 10) {
+        if ($countFilters >= 10) {
             return response()->json([
                 'message' => 'Limit of 10 reached'
-            ], 200);
+            ], 422);
         }
 
         try {
-            $filter = User::find(Auth::user()->id)->filters->create([
+
+            $filter = User::find(Auth::user()->id)->filters()->create([
                 'type' => $req->type,
                 'name' => $req->name
             ]);

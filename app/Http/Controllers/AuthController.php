@@ -27,8 +27,8 @@ class AuthController extends Controller
             ], 201);
     }
 
-    public function destroy(Request $req) {
+    public function destroy() {
         auth()->logout();
-        return response()->json(['message' => 'Successfully logged out']);
+        return response()->json(['message' => 'Successfully logged out'], 200);
     }
 }

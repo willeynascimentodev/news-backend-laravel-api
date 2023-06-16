@@ -19,7 +19,7 @@ use App\Http\Controllers\FilterController;
 */
 
 Route::resource('auth', AuthController::class)->only([
-    'store', 'destroy'
+    'store'
 ]);
 
 
@@ -28,5 +28,6 @@ Route::middleware('jwt.verify')->group(function() {
     Route::get('/filters', [FilterController::class, 'getFilters']);
     Route::post('/filters', [FilterController::class, 'store']);
     Route::delete('/filters/{id}', [FilterController::class, 'destroy']);
+    Route::delete('/auth', [AuthController::class, 'destroy']);
 });
 
