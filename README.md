@@ -23,9 +23,12 @@ In this project, it was necessary to implement integrations with more than 1 API
 ## Installation Guide
 
 1 - Make sure the port 8000 is open (You can also configure other ports, but if you use the default one, it won't be necessary to change it in the react project).
+
 2 - Run the setup.sh file that you will find in the root directory. It will be responsible for prepare the docker. 
-3 - If you haven't installed the backend yet, follow the tutorial at this link: [Frontend]([[https://reactjs.org/](https://github.com/willeynascimentodev/news-backend-laravel-api)](https://github.com/willeynascimentodev/react-news-app)).
+
+3 - If you haven't installed the backend yet, follow the tutorial at this link: [Frontend](https://github.com/willeynascimentodev/react-news-app)
 
 ### Requirements
 1 - Docker
+
 2 - Docker Compose
